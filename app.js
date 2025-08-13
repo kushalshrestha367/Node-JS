@@ -17,18 +17,28 @@ app.get('/', (req,res) =>{
     // res.render('home.ejs', {data: surName, address})
     res.render('home.ejs', { name, address})
 })
-.get('/about', (req, res) => {
-})
+//anonumous function
  app.get('/about', (req, res) => {
     res.send("<h1>This is about page</h2>")
  })
 
+app.get('/register',(req,res) => {
+    res.render('auth/register.ejs')
+})
+
+app.get('/login', (req,res) => {
+    res.render('auth/login.ejs')
+})
 
 
+//giving accesst to css 
+// app.use(express.static('public/css/'))
+app.use(express.static('public/css/'))
 
 
 
 //listen le two ota magcha port no ra call back function
-app.listen(3000, () => {
-console.log("Project is started at port 3000")
+const PORT = 3000;
+app.listen(PORT, () => {
+console.log(`Project is started at port ${PORT}`)
 })
