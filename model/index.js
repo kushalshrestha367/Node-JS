@@ -2,11 +2,13 @@ const dbConfig = require("../config/dbConfig");
 const { Sequelize, DataTypes } = require("sequelize");
 
 // la sequelize yo config haru lag ani database connect gardey vaneko hae 
+//     class      instance      
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
   operatorsAliases: false,
-  port : 50469, 
+  port : 3306,
+  //postgress : 5432 
 
   pool: {
     max: dbConfig.pool.max,
@@ -17,6 +19,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 });
 
 sequelize
+//method
   .authenticate()
   .then(() => {
     console.log("CONNECTED!!");
@@ -26,13 +29,14 @@ sequelize
   });
 
 const db = {};
-
+ // key
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// importing model files 
+// importing model files to create a data base on phymyadmin 
 // db.blogs = require("./blogModel.js")(sequelize, DataTypes);
 db.users = require("./userModel.js")(sequelize, DataTypes);
+db.blogs = require("./blogModel.js")(sequelize, DataTypes)
 
 
 

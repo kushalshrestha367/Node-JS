@@ -1,13 +1,18 @@
 //express import gareko
 const express = require('express')
+const { users } = require('./model/index')
 //mathi ko call gareko
 const app = express()
+
+require('./model/index')
 
 //const app = require('express')()
 
 //templating engine  frontend ko UI engine   ejs use vako cha k env chaiyeko sabaiset garde
 app.set('view engine', 'ejs')
-
+//parsing data
+app.use(express.urlencoded({extended : true})) //ssr
+app.use(express.json()) // external like react vuejs
 
 app.get('/', (req,res) =>{
     // res.send("<h1>This is home page</h1>")  
@@ -21,7 +26,7 @@ app.get('/', (req,res) =>{
  app.get('/about', (req, res) => {
     res.send("<h1>This is about page</h2>")
  })
-
+//rest api
 app.get('/register',(req,res) => {
     res.render('auth/register.ejs')
 })
@@ -29,7 +34,19 @@ app.get('/register',(req,res) => {
 app.get('/login', (req,res) => {
     res.render('auth/login.ejs')
 })
-
+//api  restful
+app.post('/register', async(req,res) =>{
+    //destructure   
+    const {username, email, password} = req.body;
+    //method  accept object
+    await users.create({
+        username    ,
+        email,
+        password
+        // password: password
+    })
+res.send("Register successfull")
+})
 
 //giving accesst to css 
 // app.use(express.static('public/css/'))
@@ -42,3 +59,6 @@ const PORT = 3000;
 app.listen(PORT, () => {
 console.log(`Project is started at port ${PORT}`)
 })
+
+
+//

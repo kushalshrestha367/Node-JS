@@ -1,3 +1,5 @@
+//phymyadmin baneko users vanne ya bata baneko ho
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("user", {
       email: {
