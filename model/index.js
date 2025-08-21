@@ -39,7 +39,7 @@ db.users = require("./userModel.js")(sequelize, DataTypes);
 db.blogs = require("./blogModel.js")(sequelize, DataTypes)
 
 
-
+//migrate
 db.sequelize.sync({ force: false}).then(() => {
   console.log("yes re-sync done");
 });

@@ -4,6 +4,7 @@ const { users } = require('./model/index')
 //mathi ko call gareko
 const app = express()
 const bcrypt = require('bcrypt')
+const { where } = require('sequelize')
 
 require('./model/index')
 
@@ -35,10 +36,13 @@ app.get('/register',(req,res) => {
 app.get('/login', (req,res) => {
     res.render('auth/login.ejs')
 })
-//api  restful
+//api  restful   controller
 app.post('/register', async(req,res) =>{
     //destructure   
     const {username, email, password} = req.body;
+    if(!username || !email || !password){
+        return res.send("please provide detail")
+    }
     //method  accept object
     await users.create({
         username    ,
@@ -48,6 +52,35 @@ app.post('/register', async(req,res) =>{
     })
 res.send("Register successfull")
 })
+
+//login api
+app.post('/login', async(req,res) => {
+    const {email, password} = req.body;
+    if(!email || !password){
+        return res.send("please provide your login")
+    }
+//check email
+const [data]= await users.findAll({
+    where:{
+        email: email,
+    }
+})
+if(data){
+const isMatched = bcrypt.compareSync(password, data.password)
+if(isMatched){
+    res.send("Loggin Success")
+}
+else{
+    res.send("Invalid password")
+}}
+else{
+    res.send("No user with that email or password")
+}
+})
+
+
+
+
 
 //giving accesst to css 
 // app.use(express.static('public/css/'))
