@@ -4,6 +4,9 @@ const { users } = require('./model/index')
 //mathi ko call gareko
 const app = express()
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+
 const { where } = require('sequelize')
 
 require('./model/index')
@@ -68,6 +71,15 @@ const [data]= await users.findAll({
 if(data){
 const isMatched = bcrypt.compareSync(password, data.password)
 if(isMatched){
+    //hiding user ko id k cha tyo lukako id vanne key ma email ko id user ko
+    //token create gareko
+    const token = jwt.sign({id: data.id},"nothing",{
+        expiresIn: '30d'
+    })
+    // console.log(token);
+    //to store on cookies take 2 argument first name second value
+    res.cookie('jwtToken',token)
+    
     res.send("Loggin Success")
 }
 else{
