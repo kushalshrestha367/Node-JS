@@ -3,11 +3,11 @@ const express = require('express')
 const { users } = require('./model/index')
 //mathi ko call gareko
 const app = express()
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const authRoute = require('./routes/authRoute')
 
 
 const { where } = require('sequelize')
+const { renderRegisterPage, renderLoginPage, handleRegister, handldeLogin, handleLogin } = require('./controllers/authController')
 
 require('./model/index')
 
@@ -18,77 +18,23 @@ app.set('view engine', 'ejs')
 //parsing data
 app.use(express.urlencoded({extended : true})) //ssr
 app.use(express.json()) // external like react vuejs
+//localhost:3000 / make full api math
+app.use("/",authRoute)
 
-app.get('/', (req,res) =>{
-    // res.send("<h1>This is home page</h1>")  
-    const name = "kushal"
-    const address ="biratnagar"
-    //store data be on object
-    // res.render('home.ejs', {data: surName, address})
-    res.render('home.ejs', { name, address})
-})
+// app.get('/', (req,res) =>{
+//     // res.send("<h1>This is home page</h1>")  
+//     const name = "kushal"
+//     const address ="biratnagar"
+//     //store data be on object
+//     // res.render('home.ejs', {data: surName, address})
+//     res.render('home.ejs', { name, address})
+// })
 //anonumous function
- app.get('/about', (req, res) => {
-    res.send("<h1>This is about page</h2>")
- })
-//rest api
-app.get('/register',(req,res) => {
-    res.render('auth/register.ejs')
-})
+//  app.get('/about', (req, res) => {
+//     res.send("<h1>This is about page</h2>")
+//  })
 
-app.get('/login', (req,res) => {
-    res.render('auth/login.ejs')
-})
-//api  restful   controller
-app.post('/register', async(req,res) =>{
-    //destructure   
-    const {username, email, password} = req.body;
-    if(!username || !email || !password){
-        return res.send("please provide detail")
-    }
-    //method  accept object
-    await users.create({
-        username    ,
-        email,
-        password: bcrypt.hashSync(password,10)
-        // password: password
-    })
-res.send("Register successfull")
-})
 
-//login api
-app.post('/login', async(req,res) => {
-    const {email, password} = req.body;
-    if(!email || !password){
-        return res.send("please provide your login")
-    }
-//check email
-const [data]= await users.findAll({
-    where:{
-        email: email,
-    }
-})
-if(data){
-const isMatched = bcrypt.compareSync(password, data.password)
-if(isMatched){
-    //hiding user ko id k cha tyo lukako id vanne key ma email ko id user ko
-    //token create gareko
-    const token = jwt.sign({id: data.id},"nothing",{
-        expiresIn: '30d'
-    })
-    // console.log(token);
-    //to store on cookies take 2 argument first name second value
-    res.cookie('jwtToken',token)
-    
-    res.send("Loggin Success")
-}
-else{
-    res.send("Invalid password")
-}}
-else{
-    res.send("No user with that email or password")
-}
-})
 
 
 
