@@ -1,12 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f9;
+    }
+
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px; /* space between cards */
+      width: 100%;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin: 0;
+      color: #333;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #777;
+      margin: 0;
+    }
+  </style>
+  <%- include("./components/navbar.ejs")  %> 
 </head>
 <body>
-        <h1><%- name  %></h1>
-        <p><%- address %></p>
+ <div class="card-container">
+    <% data.forEach((item) => { %>
+      <div class="card">
+        <h2><%- item.title %></h2>
+        <p><%- item.user.username %></p>
+        <!-- <p><%- item.user.password %></p> -->
+      </div>
+    <% }) %>
+  </div>
 </body>
 </html>

@@ -1,8 +1,25 @@
-const { users } = require("../model")
+const { users, questions } = require("../model")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 //register rendering page
+exports.renderHomePage = async(req,res) =>{
+//question sabai find gareko data find gareko questions vanne table cha 
+const data = await questions.findAll(
+    {
+        //joint gareko users vanne table   jaba question vanne table users sanga joint vako huncha foreign key
+        include:[{
+           model: users,
+           attributes: ["username"]
+                }
+        ]
+    }
+); //findAll gives array
+//additional data pass data vanne key ma mathi ko key pass gareko object pass garnu parcha
+//yeti garepaxi home.ejs ma loop garna paye
+res.render('home.ejs',{data})   
+}
+
 exports.renderRegisterPage = (req,res) =>{
     res.render('auth/register.ejs') 
 }

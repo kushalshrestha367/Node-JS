@@ -34,10 +34,22 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // importing model files to create a data base on phymyadmin 
-// db.blogs = require("./blogModel.js")(sequelize, DataTypes);
+// db.blogs = require("./blogModel.js")(sequelize, DataTypes);  controller ma j banako ya connect garne
 db.users = require("./userModel.js")(sequelize, DataTypes);
-db.blogs = require("./blogModel.js")(sequelize, DataTypes)
+db.questions = require("./questionModel.js")(sequelize, DataTypes);
+db.answers = require("./answerModel.js")(sequelize, DataTypes);
 
+//reference question kun manxe le gareko tyo chai chaiyo hai need foreign key userid ko kei unique kura hold garna
+//kunai pani users ko multiple question huncha    //foreing key bancha database mah
+db.users.hasMany(db.questions) 
+db.questions.belongsTo(db.users)
+
+//question to answer  ..foreign key
+db.questions.hasMany(db.answers)
+db.answers.belongsTo(db.questions)
+
+db.users.hasMany(db.answers)
+db.answers.belongsTo(db.users)
 
 //migrate
 db.sequelize.sync({ force: false}).then(() => {
