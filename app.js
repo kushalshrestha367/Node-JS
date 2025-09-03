@@ -5,11 +5,12 @@ const { users } = require('./model/index')
 const app = express()
 const authRoute = require('./routes/authRoute')
 const questionRoute = require('./routes/questionRoute')
+const answerRoute = require('./routes/answerRoute')
 const cookieparser = require('cookie-parser')
-
-
+const {promisify} = require('util');
 const { where } = require('sequelize')
 const { renderHomePage } = require('./controllers/authController')
+const jwt = require("jsonwebtoken")
 // const { renderRegisterPage, renderLoginPage, handleRegister, handldeLogin, handleLogin } = require('./controllers/authController')
 
 require('./model/index')
@@ -22,9 +23,28 @@ app.set('view engine', 'ejs')
 app.use(express.urlencoded({extended : true})) //ssr
 app.use(express.json()) // external like react vuejs
 app.use(cookieparser())
+app.use(async(req,res,next) => {
+    const token = req.cookies.jwtToken;
+// res.locals.token = token 
+try {
+    const decryptedResult = await promisify(jwt.verify)(token,'nothing')
+if(decryptedResult){
+    res.locals.isAuthenticated = true
+}
+else{
+    res.locals.isAuthenticated = false
+}
+} catch (error) {
+    res.locals.isAuthenticated = false
+}
+next()
+})
+
 //localhost:3000 / make full api math
 app.use("/",authRoute)
 app.use("/", questionRoute)
+app.use('/answer',answerRoute)
+//yo code every request ma trigger hunhcha
 
 // app.get('/',(res,req) => {
 //     res.render('renderHomePage')
@@ -52,6 +72,7 @@ app.get('/home',renderHomePage)
 //giving accesst to css 
 // app.use(express.static('public/css/'))
 app.use(express.static('public/css/'))
+app.use(express.static('./storage/'))
 
 
 

@@ -41,7 +41,7 @@ exports.handleRegister = async(req,res) =>{
         password: bcrypt.hashSync(password,10)
         // password: password
     })
-res.send("Register successfull")
+res.redirect('/login')
 }
 
 
@@ -67,8 +67,9 @@ if(isMatched){
     console.log(token);
     //to store on cookies take 2 argument first name second value
     res.cookie('jwtToken',token)
+    res.redirect('/home')
     
-    res.send("Loggin Success")
+    // res.send("Loggin Success")
 }
 else{
     res.send("Invalid password")

@@ -1,0 +1,215 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+      background: #f4f4f9;
+    }
+
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px; /* space between cards */
+      width: 100%;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin: 0;
+      color: #333;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #777;
+      margin: 0;
+    }
+  </style>
+  <%- include("../components/navbar.ejs")  %> 
+</head>
+<body>
+ <div class="card-container">
+      <div class="card">
+        <h2><%- data[0].title %></h2>
+        <p><%- data[0].description %></p>
+        <img src="http://localhost:3000/<%- data[0].image %>" alt="question image" /><br>
+        <i>Author : <%- data[0].user.username %></i>
+        <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
+      </div>
+      <div class="answersection">
+        <form action="">
+          <textarea name="answer" id="" cols="90" rows="10"></textarea><br>
+          <button>Submit</button>
+        </form>
+      </div>
+  </div>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question List</title>
+  <style>
+    /* Global styles */
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f9fafc, #eef1f7);
+      color: #333;
+    }
+
+    /* Container */
+    .card-container {
+      max-width: 900px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .card h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    .card p {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .card i {
+      display: block;
+      font-size: 13px;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    /* Answer Section */
+    .answersection {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+    }
+
+    .answersection form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    textarea {
+      resize: none;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    textarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+
+    button {
+      padding: 12px 18px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #4338ca, #4f46e5);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+    }
+  </style>
+  <%- include("../components/navbar.ejs")  %> 
+</head>
+<body>
+ <div class="card-container">
+  Questions:
+      <div class="card">
+        <h2><%- data[0].title %></h2>
+        <p><%- data[0].description %></p>
+        <img src="http://localhost:3000/<%- data[0].image %>" alt="question image" />
+        <i>Author : <%- data[0].user.username %></i>
+        <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
+      </div>
+      
+      <!-- yo page ka bata dekhiracha question controller last line dekhi -->
+<div class="answer">
+  Answers:
+  <div class="card">
+    <% answers.forEach((answer) => { %>
+
+        <p><%- answer.answerText %></p>
+        <i>Author : <%- answer.user.username %></i>
+        <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
+   <% })   %>
+      </div>
+</div>
+      <div class="answersection">
+        <form action="/answer/<%- data[0].id %>" method="post">
+          <textarea name="answer" cols="90" rows="6" placeholder="Write your answer here..."></textarea>
+          <button type="submit">Submit Answer</button>
+        </form>
+      </div>
+  </div>
+</body>
+</html>
+
