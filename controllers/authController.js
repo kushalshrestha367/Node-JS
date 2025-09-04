@@ -1,6 +1,7 @@
 const { users, questions } = require("../model")
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const sendEmail = require("../utils/sendEmail");
 
 //register rendering page
 exports.renderHomePage = async(req,res) =>{
@@ -35,12 +36,18 @@ exports.handleRegister = async(req,res) =>{
         return res.send("please provide detail")
     }
     //method  accept object
+     await sendEmail({
+        email: email,
+        subject: "Welcome to project",
+        text: "Thank You For Registering"
+    })
     await users.create({
         username    ,
         email,
         password: bcrypt.hashSync(password,10)
         // password: password
     })
+    
 res.redirect('/login')
 }
 
@@ -77,4 +84,38 @@ else{
 else{
     res.send("No user with that email or password")
 }
+}
+
+//forget password  ui
+exports.renderForgotPasswordPage = (req,res) => {
+    res.render('./auth/forgetPassword.ejs')
+}
+//handling above Ui
+exports.handleForgetPassword = async(req,res) => {
+    const {email} = req.body
+//finding user
+    const data = await users.findAll({
+        where:{
+            email : email
+        }
+    })
+    if(data.length === 0) return res.send("No user register with that email")
+    const otp = Math.floor(Math.random() * 1000) + 9999
+
+    //sending opt to above incoming email   sendmail my data pathako
+    await sendEmail({
+        email: email,
+        subject: "Your reset password OTP",
+        text: `Your OTP is ${otp}`
+    })
+    //otp pathako
+    data[0].otp = otp;
+    //storing otp
+    await data[0].save()
+
+    res.redirect("/verifyOtp")
+}
+//watch opt page
+exports.renderVerifyOtpPage = (req,res) => {
+    res.render("./auth/verifyOtp")
 }

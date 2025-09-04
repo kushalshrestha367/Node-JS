@@ -14,13 +14,12 @@
 
     <!-- Form -->
     <div class="form-container">
-        <h2>Login</h2>
-        <form action="/login" method="post">
+        <h2>Forget Password</h2>
+        <form action="/verifyOtp" method="post">
             <!-- <input type="text" name="username" placeholder="Username" required> -->
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-            <a href="/forgotpassword">Forget Password?</a>
+            <input type="number" name="Otp" placeholder="Otp" required>
+            <button value="verify Otp">Submit</button>
+            <!-- <input type="submit" value="Verify Otp  "> -->
         </form>
     </div>
 
