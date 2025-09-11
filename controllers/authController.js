@@ -6,6 +6,8 @@ const sendEmail = require("../utils/sendEmail");
 //register rendering page
 exports.renderHomePage = async(req,res) =>{
 //question sabai find gareko data find gareko questions vanne table cha 
+//flash show gareko login garera
+const [success] = req.flash('success')
 const data = await questions.findAll(
     {
         //joint gareko users vanne table   jaba question vanne table users sanga joint vako huncha foreign key
@@ -18,15 +20,19 @@ const data = await questions.findAll(
 ); //findAll gives array
 //additional data pass data vanne key ma mathi ko key pass gareko object pass garnu parcha
 //yeti garepaxi home.ejs ma loop garna paye
-res.render('home.ejs',{data})   
+//success vane mathi ko array ya haleko  pass gareko home mah
+res.render('home.ejs',{data,success})   
 }
 
 exports.renderRegisterPage = (req,res) =>{
     res.render('auth/register.ejs') 
 }
-
+//flash redirect here from handlelogin
 exports.renderLoginPage = (req,res) => {
-    res.render('auth/login.ejs') 
+    //message show here
+    const [error]  = req.flash('error')
+    const [success] = req.flash('success')
+    res.render('auth/login.ejs',{error,success}) 
 }
 
 exports.handleRegister = async(req,res) =>{
@@ -51,7 +57,7 @@ exports.handleRegister = async(req,res) =>{
 res.redirect('/login')
 }
 
-
+//handle login
 exports.handleLogin = async(req,res) => {
     const {email, password} = req.body;
     if(!email || !password){
@@ -74,15 +80,18 @@ if(isMatched){
     console.log(token);
     //to store on cookies take 2 argument first name second value
     res.cookie('jwtToken',token)
+     req.flash('success',"Login Successfully")
     res.redirect('/home')
     
     // res.send("Loggin Success")
 }
 else{
-    res.send("Invalid password")
+    req.flash('error', "Invalid Password")
+    res.redirect('/login')
 }}
 else{
-    res.send("No user with that email or password")
+    req.flash('error',"No user with that email")
+    res.redirect('/login')
 }
 }
 
@@ -190,3 +199,9 @@ if(currentTime - otpGeneratedTime <= 120000){
 }else{
     res.send("otp expire!!")
 }}
+
+exports.logout = (req,res) =>{
+    res.clearCookie('jwtToken')
+    req.flash('success',"Logout Successfully")
+    res.redirect('/login')
+}

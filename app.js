@@ -11,6 +11,9 @@ const {promisify} = require('util');
 const { where } = require('sequelize')
 const { renderHomePage } = require('./controllers/authController')
 const jwt = require("jsonwebtoken")
+const session = require('express-session')
+const flash = require('connect-flash')
+const catchError = require('./utils/catchError')
 // const { renderRegisterPage, renderLoginPage, handleRegister, handldeLogin, handleLogin } = require('./controllers/authController')
 
 require('./model/index')
@@ -23,6 +26,15 @@ app.set('view engine', 'ejs')
 app.use(express.urlencoded({extended : true})) //ssr
 app.use(express.json()) // external like react vuejs
 app.use(cookieparser())
+//session login 
+app.use(session({
+    secret: "Nothing",
+    resave: false,
+    saveUninitialized: false
+}))
+//flash
+app.use(flash())
+
 app.use(async(req,res,next) => {
     const token = req.cookies.jwtToken;
 // res.locals.token = token 
@@ -49,7 +61,8 @@ app.use('/answer',answerRoute)
 // app.get('/',(res,req) => {
 //     res.render('renderHomePage')
 // })
-app.get('/home',renderHomePage)
+//catch error ma arguement pathaidine
+app.get('/home',catchError(renderHomePage))
 // app.get('/', (req,res) =>{
 //     // res.send("<h1>This is home page</h1>")  
 //     // const name = "kushal"

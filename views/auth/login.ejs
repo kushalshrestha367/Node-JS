@@ -13,10 +13,13 @@
     <%- include("../components/navbar.ejs")  %>
 
     <!-- Form -->
+     <p style="color: green;"><%- success %></p>
     <div class="form-container">
         <h2>Login</h2>
+        
         <form action="/login" method="post">
             <!-- <input type="text" name="username" placeholder="Username" required> -->
+             <p style="color: red;"><%- error %></p>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
