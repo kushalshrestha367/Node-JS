@@ -1,6 +1,6 @@
 //express import gareko
 const express = require('express')
-const { users } = require('./model/index')
+const { users, answers } = require('./model/index')
 //mathi ko call gareko
 const app = express()
 const authRoute = require('./routes/authRoute')
@@ -14,6 +14,7 @@ const jwt = require("jsonwebtoken")
 const session = require('express-session')
 const flash = require('connect-flash')
 const catchError = require('./utils/catchError')
+const socketio = require('socket.io')
 // const { renderRegisterPage, renderLoginPage, handleRegister, handldeLogin, handleLogin } = require('./controllers/authController')
 
 require('./model/index')
@@ -91,9 +92,29 @@ app.use(express.static('./storage/'))
 
 //listen le two ota magcha port no ra call back function
 const PORT = 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
 console.log(`Project is started at port ${PORT}`)
 })
 
 
-//
+//instance  oop  websocket  socket server
+const io = socketio(server,{
+    //object
+    cors:{
+        origin : "*"
+    }
+})
+
+//take two argument if someone try to connect what to do  and take function  suniracha yesle  backend on taken incoming listen
+io.on('connection',(socket)=>{
+    //like singlequestionpage bata pathako
+    socket.on('like',async(id) => {
+        //find tyo id ko answer cha nai 
+     const answer = await answers.findByPk(id)
+     if(answer){
+        answer.likes += 1;
+        await answer.save();
+        socket.emit('likeUpdate',answer.likes)
+     }        
+    })
+})

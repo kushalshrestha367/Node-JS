@@ -177,6 +177,22 @@
       transform: scale(1.05);
       box-shadow: 0 4px 12px rgba(79,70,229,0.3);
     }
+    .like-btn {
+  padding: 6px 12px;
+  background: #e0e7ff;
+  color: #4f46e5;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all 0.2s ease;
+}
+
+.like-btn:hover {
+  background: #c7d2fe;
+}
+
   </style>
   <%- include("../components/navbar.ejs")  %> 
 </head>
@@ -200,8 +216,11 @@
         <p><%- answer.answerText %></p>
         <i>Author : <%- answer.user.username %></i>
         <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
-   <% })   %>
+          <br>
+  <span id="likes"></span>   <button  class="like-btn" onclick="likePost(<%= answer.id %>)">👍 Like</button>
       </div>
+   <% })   %>
+ 
 </div>
       <div class="answersection">
         <form action="/answer/<%- data[0].id %>" method="post">
@@ -210,6 +229,19 @@
         </form>
       </div>
   </div>
+  <!-- for client socket -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    function likePost(answerId) {
+     socket.emit('like',answerId)
+    }
+    socket.on('likeUpdate',(likesCount) =>{
+//mathi span ko id pakreko
+      const likes = document.getElementById("likes")
+      likes.textContent = likesCount
+    })
+  </script>
 </body>
 </html>
 
