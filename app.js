@@ -1,6 +1,6 @@
 //express import gareko
 const express = require('express')
-const { users, answers } = require('./model/index')
+const { users, answers, sequelize } = require('./model/index')
 //mathi ko call gareko
 const app = express()
 const authRoute = require('./routes/authRoute')
@@ -8,7 +8,7 @@ const questionRoute = require('./routes/questionRoute')
 const answerRoute = require('./routes/answerRoute')
 const cookieparser = require('cookie-parser')
 const {promisify} = require('util');
-const { where } = require('sequelize')
+const { where, QueryTypes } = require('sequelize')
 const { renderHomePage } = require('./controllers/authController')
 const jwt = require("jsonwebtoken")
 const session = require('express-session')
@@ -99,7 +99,8 @@ console.log(`Project is started at port ${PORT}`)
 
 //instance  oop  websocket  socket server
 const io = socketio(server,{
-    //object
+    //object jasle ni access garna payo
+
     cors:{
         origin : "*"
     }
@@ -108,13 +109,28 @@ const io = socketio(server,{
 //take two argument if someone try to connect what to do  and take function  suniracha yesle  backend on taken incoming listen
 io.on('connection',(socket)=>{
     //like singlequestionpage bata pathako
-    socket.on('like',async(id) => {
+    socket.on('like',async({answerId, cookie}) => {
         //find tyo id ko answer cha nai 
-     const answer = await answers.findByPk(id)
-     if(answer){
-        answer.likes += 1;
-        await answer.save();
-        socket.emit('likeUpdate',answer.likes)
-     }        
+     const answer = await answers.findByPk(answerId)
+     if(answer && cookie){
+             const decryptedResult = await promisify(jwt.verify)(cookie,'nothing')
+        if(decryptedResult){
+            const user = await sequelize.query(`SELECT * FROM likes_${answerId} WHERE userId=${decryptedResult.id}`,{
+                type: QueryTypes.SELECT
+            })
+       if(user.length === 0){
+         await sequelize.query(`INSERT INTO likes_${answerId} (userId) VALUES(${decryptedResult.id})`,{
+            type: QueryTypes.INSERT
+        })
+       }
+     }
+        const likes = await sequelize.query(`SELECT * FROM likes_${answerId}`,{
+            type: QueryTypes.SELECT
+        })
+        const likesCount = likes.length
+
+        socket.emit('likeUpdate',{likesCount,answerId})     
+    }
     })
 })
+
