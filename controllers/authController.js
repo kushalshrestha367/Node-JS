@@ -48,7 +48,7 @@ exports.handleRegister = async(req,res) =>{
         text: "Thank You For Registering"
     })
     await users.create({
-        username    ,
+        username,
         email,
         password: bcrypt.hashSync(password,10)
         // password: password
