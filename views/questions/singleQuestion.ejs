@@ -1,70 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Question List</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 10px;
-      background: #f4f4f9;
-    }
-
-    .card-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px; /* space between cards */
-      width: 100%;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 15px 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: scale(1.02);
-    }
-
-    .card h2 {
-      font-size: 18px;
-      margin: 0;
-      color: #333;
-    }
-
-    .card p {
-      font-size: 14px;
-      color: #777;
-      margin: 0;
-    }
-  </style>
-  <%- include("../components/navbar.ejs")  %> 
-</head>
-<body>
- <div class="card-container">
-      <div class="card">
-        <h2><%- data[0].title %></h2>
-        <p><%- data[0].description %></p>
-        <img src="http://localhost:3000/<%- data[0].image %>" alt="question image" /><br>
-        <i>Author : <%- data[0].user.username %></i>
-        <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
-      </div>
-      <div class="answersection">
-        <form action="">
-          <textarea name="answer" id="" cols="90" rows="10"></textarea><br>
-          <button>Submit</button>
-        </form>
-      </div>
-  </div>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,79 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Question List</title>
   <style>
-    /* Global styles */
+    /* === Global === */
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #f9fafc, #eef1f7);
+      padding: 30px;
+      background: linear-gradient(135deg,#f0f4ff,#f9fafc);
       color: #333;
     }
+    h1 {
+      text-align: center;
+      color: #4f46e5;
+      margin-bottom: 30px;
+    }
 
-    /* Container */
+    /* === Container === */
     .card-container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 25px;
     }
 
-    /* Card */
+    /* === Card === */
     .card {
       background: #fff;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
       transition: all 0.3s ease;
     }
-
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.12);
     }
-
     .card h2 {
-      font-size: 22px;
+      font-size: 24px;
       margin-bottom: 10px;
       color: #222;
     }
-
     .card p {
-      font-size: 15px;
+      font-size: 16px;
       color: #555;
       margin-bottom: 15px;
       line-height: 1.6;
     }
-
     .card img {
       max-width: 100%;
       height: auto;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 15px;
     }
-
     .card i {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       color: #888;
       margin-top: 5px;
     }
 
-    /* Answer Section */
+    /* === Answer List === */
+    .answers-section {
+      background: #fefefe;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .answers-section h3 {
+      font-size: 20px;
+      color: #4f46e5;
+      margin-bottom: 15px;
+    }
+    .answer-card {
+      background: #f9faff;
+      border-left: 4px solid #4f46e5;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .answer-card p {
+      margin-bottom: 5px;
+      font-size: 15px;
+      color: #444;
+    }
+    .answer-card i {
+      font-size: 13px;
+      color: #777;
+    }
+
+    /* === Like button === */
+    .like-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #e0e7ff;
+      color: #4f46e5;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s ease;
+    }
+    .like-btn:hover {
+      background: #c7d2fe;
+    }
+
+    /* === Answer form === */
     .answersection {
       background: #fff;
       border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     }
-
+    .answersection h3 {
+      font-size: 20px;
+      color: #4f46e5;
+      margin-bottom: 15px;
+    }
     .answersection form {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
-
     textarea {
       resize: none;
       padding: 12px;
@@ -155,15 +137,14 @@
       outline: none;
       transition: border 0.3s;
     }
-
     textarea:focus {
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
     }
-
     button {
-      padding: 12px 18px;
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      align-self: flex-start;
+      padding: 12px 20px;
+      background: linear-gradient(135deg,#4f46e5,#6366f1);
       color: #fff;
       border: none;
       border-radius: 10px;
@@ -171,84 +152,67 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-
     button:hover {
-      background: linear-gradient(135deg, #4338ca, #4f46e5);
-      transform: scale(1.05);
+      background: linear-gradient(135deg,#4338ca,#4f46e5);
+      transform: scale(1.04);
       box-shadow: 0 4px 12px rgba(79,70,229,0.3);
     }
-    .like-btn {
-  padding: 6px 12px;
-  background: #e0e7ff;
-  color: #4f46e5;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: all 0.2s ease;
-}
-
-.like-btn:hover {
-  background: #c7d2fe;
-}
-
   </style>
-  <%- include("../components/navbar.ejs")  %> 
+  <%- include("../components/navbar.ejs")  %>
 </head>
 <body>
- <div class="card-container">
-  Questions:
-      <div class="card">
-        <h2><%- data[0].title %></h2>
-        <p><%- data[0].description %></p>
-        <img src="http://localhost:3000/<%- data[0].image %>" alt="question image" />
-        <i>Author : <%- data[0].user.username %></i>
-        <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
-      </div>
-      
-      <!-- yo page ka bata dekhiracha question controller last line dekhi -->
-<div class="answer">
-  Answers:
-  <div class="card">
-    <% answers.forEach((answer) => { %>
+  <h1>Questions & Answers</h1>
+  <div class="card-container">
 
-        <p><%- answer.answerText %></p>
-        <i>Author : <%- answer.user.username %></i>
-        <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
-          <br>
-   <button  class="like-btn" onclick="likePost(<%- answer.id %>)">👍 Like</button>
-    <span id="likes_<%- answer.id %>"></span> 
-      </div>
-   <% })   %>
- 
-</div>
-      <div class="answersection">
-        <form action="/answer/<%- data[0].id %>" method="post">
-          <textarea name="answer" cols="90" rows="6" placeholder="Write your answer here..."></textarea>
-          <button type="submit">Submit Answer</button>
-        </form>
-      </div>
+    <!-- Question Card -->
+    <div class="card">
+      <h2><%- data[0].title %></h2>
+      <p><%- data[0].description %></p>
+      <img src="http://localhost:3000/<%- data[0].image %>" alt="question image" />
+      <i>Author : <%- data[0].user.username %></i>
+      <i>Posted on: <%- new Date(data[0].createdAt).toLocaleDateString() %></i>
+    </div>
+
+    <!-- Answers Section -->
+    <div class="answers-section">
+      <h3>Answers:</h3>
+      <% answers.forEach((answer) => { %>
+        <div class="answer-card">
+          <p><%- answer.answerText %></p>
+          <i>Author : <%- answer.user.username %></i><br>
+          <i>Posted on: <%- new Date(answer.createdAt).toLocaleDateString() %></i><br>
+          <button class="like-btn" onclick="likePost(<%- answer.id %>)">👍 Like</button>
+          <span id="likes_<%- answer.id %>"><%- answer.likes %></span>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- Answer Form -->
+    <div class="answersection">
+      <h3>Write your Answer</h3>
+      <form action="/answer/<%- data[0].id %>" method="post">
+        <textarea name="answer" cols="90" rows="6" placeholder="Write your answer here..."></textarea>
+        <button type="submit">Submit Answer</button>
+      </form>
+    </div>
+
   </div>
-  <!-- for client socket -->
+
+  <!-- client socket -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const cookie = document.cookie.split('=')
-    // console.log(cookie);
-    
+    const cookie = document.cookie.split('=');
     function likePost(answerId) {
-     socket.emit('like',{
-      answerId,
-      cookie: cookie[1]
-     })
+      socket.emit('like',{
+        answerId,
+        cookie: cookie[1]
+      });
     }
     socket.on('likeUpdate',({likesCount,answerId}) =>{
-//mathi span ko id pakreko
-      const likes = document.getElementById(`likes_${answerId}`)
-      likes.textContent = likesCount
-    })
+      const likes = document.getElementById(`likes_${answerId}`);
+      likes.textContent = likesCount;
+    });
   </script>
 </body>
 </html>
-

@@ -15,6 +15,11 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const catchError = require('./utils/catchError')
 const socketio = require('socket.io')
+//.env
+require("dotenv").config()
+
+
+
 // const { renderRegisterPage, renderLoginPage, handleRegister, handldeLogin, handleLogin } = require('./controllers/authController')
 
 require('./model/index')
@@ -128,6 +133,13 @@ io.on('connection',(socket)=>{
             type: QueryTypes.SELECT
         })
         const likesCount = likes.length
+        await answers.update({
+            likes: likesCount
+        },{
+            where:{
+                id: answerId
+            }
+        })
 
         socket.emit('likeUpdate',{likesCount,answerId})     
     }
