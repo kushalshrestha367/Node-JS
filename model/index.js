@@ -7,7 +7,9 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
   operatorsAliases: false,
-  port : 3306,
+  //for production railway
+  port : 43461,
+  // port : 3306,
   //postgress : 5432 
 
   pool: {
