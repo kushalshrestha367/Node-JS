@@ -15,6 +15,9 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const catchError = require('./utils/catchError')
 const socketio = require('socket.io')
+//ratelimit for websecurity
+const rateLimit = require("express-rate-limit")
+ const helmet = require("helmet")
 //.env
 require("dotenv").config()
 
@@ -28,6 +31,7 @@ require('./model/index')
 
 //templating engine  frontend ko UI engine   ejs use vako cha k env chaiyeko sabaiset garde
 app.set('view engine', 'ejs')
+
 //parsing data
 app.use(express.urlencoded({extended : true})) //ssr
 app.use(express.json()) // external like react vuejs
@@ -38,9 +42,17 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
+
+const rateLimiter = rateLimit({
+    windowMs: 2 * 60 * 1000,
+    limit : 3,
+    message : "You have reached your Limit try again after 2 min"
+})
 //flash
 app.use(flash())
-
+app.use("/forgotPassword",rateLimiter)
+app.use(helmet())
+ 
 app.use(async(req,res,next) => {
     const token = req.cookies.jwtToken;
 // res.locals.token = token 

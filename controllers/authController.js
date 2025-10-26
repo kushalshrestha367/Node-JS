@@ -126,11 +126,27 @@ exports.handleForgetPassword = async(req,res) => {
     res.redirect("/verifyOtp?email=" + email)
 }
 //watch opt page
-exports.renderVerifyOtpPage = (req,res) => {
-    //for query email
-    const email = req.query.email
-    res.render("./auth/verifyOtp",{email: email})
-}
+// exports.renderVerifyOtpPage = (req,res) => {
+//     //for query email
+//     const email = req.query.email
+//     res.render("./auth/verifyOtp",{email: email})
+// }
+exports.renderVerifyOtpPage = (req, res) => {
+  // for query email
+  const email = req.query.email;
+
+  // get flash messages
+  const error = req.flash('error');
+  const success = req.flash('success');
+
+  // pass them to view
+  res.render('./auth/verifyOtp', {
+    email: email,
+    error: error,
+    success: success
+  });
+};
+
 
 //verify otp
 exports.verifyOtp = async(req,res) => {
@@ -143,15 +159,22 @@ exports.verifyOtp = async(req,res) => {
         }
     })
     if(data.length === 0){
-        return res.send("Invalid otp")
+        //invalid otp
+        req.flash('error',"Invalid OTP")
+        // return res.send("Invalid otp")
+        res.redirect('/verifyOtp')
     }
     const currentTime = Date.now();
     const otpGeneratedTime = data[0].otpGeneratedTime;
     if(currentTime - otpGeneratedTime <= 120000){
-        res.redirect(`/resetPassword?email=${email}&otp=${otp}`)
+        req.flash('success',"OTP Verified Successfully")
+         return res.redirect(`/resetPassword?email=${email}&otp=${otp}`)
+    
     }
     else{
-        res.send('OTP expired')
+        req.flash('error',"OTP ")
+        // res.send('OTP expired')
+        res.redirect('/verifyOtp ')
     }
 }
 
